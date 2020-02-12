@@ -1,19 +1,35 @@
-PORT=$1
-
-
 # Set user up to match current user.
 # use $VIRUAL_ENV to get the directory of virtual environment
 # volume mount the $VIRUAL_ENV mirroed in docker container
 # set the environment the same.
 # add $VIRUAL_ENV to the PATH of the docker container
 
+
+
+
+
+
+# if [ "$VIRTUAL_ENV" == "" ]
+#     then
+#     echo "A Virtual environment needs to be sourced to be bridged."
+#     exit 0
+# fi
+
+PORT=$1
+echo "Bridging port [${PORT}] with jupyter default [8888]"
+echo "Bridging [$PWD] with [/work]"
+# echo "Bridging [$VIRTUAL_ENV] with [/opt/venv]"
+
+
+
 docker run \
-    --it\
+    -it\
     --rm \
-    -p PORT:8888 \
+    --gpus '"device=0"' \
+    -p 8888:8888 \
     -v "$PWD":/work \
-    -v "${VIRTUAL_ENV}:/opt/venv
-    --user $(id -u):$(id -g)
-    jupyter_cuda \
-    bash -c 'exec env PATH=/opt/venv:$PATH bash' 
-    # Check this ^^
+    -v "${HOME}":${HOME} \
+    ezcuda \
+    # --entrypoint "jupyter notebook --ip=0.0.0.0 --no-browser --allow-root"
+    # --user $(id -u):$(id -g) \
+    # jupyter notebook --no-browser
