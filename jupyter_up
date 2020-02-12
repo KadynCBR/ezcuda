@@ -1,0 +1,19 @@
+PORT=$1
+
+
+# Set user up to match current user.
+# use $VIRUAL_ENV to get the directory of virtual environment
+# volume mount the $VIRUAL_ENV mirroed in docker container
+# set the environment the same.
+# add $VIRUAL_ENV to the PATH of the docker container
+
+docker run \
+    --it\
+    --rm \
+    -p PORT:8888 \
+    -v "$PWD":/work \
+    -v "${VIRTUAL_ENV}:/opt/venv
+    --user $(id -u):$(id -g)
+    jupyter_cuda \
+    bash -c 'exec env PATH=/opt/venv:$PATH bash' 
+    # Check this ^^
