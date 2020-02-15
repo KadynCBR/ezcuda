@@ -9,27 +9,32 @@
 
 
 
-# if [ "$VIRTUAL_ENV" == "" ]
-#     then
-#     echo "A Virtual environment needs to be sourced to be bridged."
-#     exit 0
-# fi
-
 PORT=$1
+HOME=/home/`whoami`
+if [ "$VIRTUAL_ENV" == "" ]
+    then
+    echo "A Virtual environment needs to be sourced to be bridged."
+    exit 0
+fi
+
+if [ "$PORT" == "" ]
+    then
+    echo "No port specified, using default of 8888"
+    PORT=8888
+fi
+
 echo "Bridging port [${PORT}] with jupyter default [8888]"
-echo "Bridging [$PWD] with [/work]"
-# echo "Bridging [$VIRTUAL_ENV] with [/opt/venv]"
-
-
+echo "Bridging [$HOME]"
+echo "Bridging [$VIRTUAL_ENV]"
 
 docker run \
     -it\
     --rm \
     --gpus '"device=0"' \
-    -p 8888:8888 \
-    -v "$PWD":/work \
+    -e VIRTUAL_ENV \
+    -e PATH \
+    -p ${PORT}:8888 \
     -v "${HOME}":${HOME} \
-    ezcuda \
+    ezcuda bash
     # --entrypoint "jupyter notebook --ip=0.0.0.0 --no-browser --allow-root"
-    # --user $(id -u):$(id -g) \
     # jupyter notebook --no-browser
