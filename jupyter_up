@@ -1,16 +1,6 @@
-# Set user up to match current user.
-# use $VIRUAL_ENV to get the directory of virtual environment
-# volume mount the $VIRUAL_ENV mirroed in docker container
-# set the environment the same.
-# add $VIRUAL_ENV to the PATH of the docker container
-
-
-
-
-
-
 PORT=$1
 HOME=/home/`whoami`
+CURRENT_DIR=`pwd`
 if [ "$VIRTUAL_ENV" == "" ]
     then
     echo "A Virtual environment needs to be sourced to be bridged."
@@ -35,6 +25,5 @@ docker run \
     -e PATH \
     -p ${PORT}:8888 \
     -v "${HOME}":${HOME} \
-    ezcuda bash
-    # --entrypoint "jupyter notebook --ip=0.0.0.0 --no-browser --allow-root"
-    # jupyter notebook --no-browser
+    ezcuda \
+    bash -c "cd ${CURRENT_DIR} && jupyter notebook --ip=0.0.0.0 --no-browser"
